@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Sehat Vault AI</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+    <div class="container mt-5 mb-5">
+
+        <div class="card shadow-lg border-0">
+
+            <div class="card-header bg-primary text-white text-center">
+
+                <h2>🏥 Sehat Vault AI</h2>
+
+                <p class="mb-0">
+
+                    Medical Report Analysis
+
+                </p>
+
+            </div>
+
+            <div class="card-body">
+
+                <h4>📋 Medical Summary</h4>
+
+                <p>{{ summary }}</p>
+
+                <hr>
+
+                <h4 class="text-danger">
+
+                    ⚠️ Abnormal Findings
+
+                </h4>
+
+                <ul>
+
+                    {% for item in findings %}
+
+                    <li>{{ item }}</li>
+
+                    {% endfor %}
+
+                </ul>
+
+                <hr>
+
+                <h4 class="text-warning">
+
+                    🦠 Possible Diseases
+
+                </h4>
+
+                <ul>
+
+                    {% for item in diseases %}
+
+                    <li>{{ item }}</li>
+
+                    {% endfor %}
+
+                </ul>
+
+                <hr>
+
+                <h4 class="text-success">
+
+                    💡 Recommendations
+
+                </h4>
+
+                <ul>
+
+                    {% for item in recommendations %}
+
+                    <li>{{ item }}</li>
+
+                    {% endfor %}
+
+                </ul>
+
+                <div class="text-center mt-5">
+
+                    <a href="/" class="btn btn-primary">
+
+                        Analyze Another Report
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</body>
+
+</html>
