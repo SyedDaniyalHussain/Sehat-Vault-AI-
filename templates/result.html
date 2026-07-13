@@ -4,106 +4,301 @@
 <head>
 
     <meta charset="UTF-8">
-
     <title>Sehat Vault AI</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+
+        #chat-box{
+
+            height:400px;
+
+            overflow-y:auto;
+
+            border:1px solid #ddd;
+
+            border-radius:10px;
+
+            padding:15px;
+
+            background:#f8f9fa;
+
+        }
+
+        .user{
+
+            text-align:right;
+
+            margin-bottom:12px;
+
+        }
+
+        .bot{
+
+            text-align:left;
+
+            margin-bottom:12px;
+
+        }
+
+        .user span{
+
+            background:#0d6efd;
+
+            color:white;
+
+            padding:10px 15px;
+
+            border-radius:15px;
+
+            display:inline-block;
+
+            max-width:80%;
+
+        }
+
+        .bot span{
+
+            background:white;
+
+            border:1px solid #ddd;
+
+            padding:10px 15px;
+
+            border-radius:15px;
+
+            display:inline-block;
+
+            max-width:80%;
+
+        }
+
+    </style>
 
 </head>
 
 <body class="bg-light">
 
-    <div class="container mt-5 mb-5">
+<div class="container mt-5 mb-5">
 
-        <div class="card shadow-lg border-0">
+<div class="card shadow-lg border-0">
 
-            <div class="card-header bg-primary text-white text-center">
+<div class="card-header bg-primary text-white text-center">
 
-                <h2>🏥 Sehat Vault AI</h2>
+<h2>🏥 Sehat Vault AI</h2>
 
-                <p class="mb-0">
+<p class="mb-0">Medical Report Analysis</p>
 
-                    Medical Report Analysis
+</div>
 
-                </p>
+<div class="card-body">
 
-            </div>
+<h4>📋 Medical Summary</h4>
 
-            <div class="card-body">
+<p>{{ summary }}</p>
 
-                <h4>📋 Medical Summary</h4>
+<hr>
 
-                <p>{{ summary }}</p>
+<h4 class="text-danger">⚠️ Abnormal Findings</h4>
 
-                <hr>
+<ul>
 
-                <h4 class="text-danger">
+{% for item in findings %}
 
-                    ⚠️ Abnormal Findings
+<li>{{ item }}</li>
 
-                </h4>
+{% endfor %}
 
-                <ul>
+</ul>
 
-                    {% for item in findings %}
+<hr>
 
-                    <li>{{ item }}</li>
+<h4 class="text-warning">🦠 Possible Diseases</h4>
 
-                    {% endfor %}
+<ul>
 
-                </ul>
+{% for item in diseases %}
 
-                <hr>
+<li>{{ item }}</li>
 
-                <h4 class="text-warning">
+{% endfor %}
 
-                    🦠 Possible Diseases
+</ul>
 
-                </h4>
+<hr>
 
-                <ul>
+<h4 class="text-success">💡 Recommendations</h4>
 
-                    {% for item in diseases %}
+<ul>
 
-                    <li>{{ item }}</li>
+{% for item in recommendations %}
 
-                    {% endfor %}
+<li>{{ item }}</li>
 
-                </ul>
+{% endfor %}
 
-                <hr>
+</ul>
 
-                <h4 class="text-success">
+<hr class="mt-5">
 
-                    💡 Recommendations
+<h3 class="text-primary">
 
-                </h4>
+💬 Ask AI About Your Report
 
-                <ul>
+</h3>
 
-                    {% for item in recommendations %}
+<p class="text-muted">
 
-                    <li>{{ item }}</li>
+Ask follow-up questions regarding your uploaded report.
 
-                    {% endfor %}
+</p>
 
-                </ul>
+<div id="chat-box">
 
-                <div class="text-center mt-5">
+<div class="bot">
 
-                    <a href="/" class="btn btn-primary">
+<span>
 
-                        Analyze Another Report
+Hello 👋
 
-                    </a>
+I am Sehat Vault AI.
 
-                </div>
+Ask me anything about your uploaded medical report.
 
-            </div>
+</span>
 
-        </div>
+</div>
 
-    </div>
+</div>
+
+<div class="input-group mt-3">
+
+<input
+id="message"
+type="text"
+class="form-control"
+placeholder="Ask a question...">
+
+<button
+class="btn btn-primary"
+onclick="sendMessage()">
+
+Send
+
+</button>
+
+</div>
+
+<div class="text-center mt-5">
+
+<a href="/" class="btn btn-primary">
+
+Analyze Another Report
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+async function sendMessage(){
+
+const input=document.getElementById("message");
+
+const chat=document.getElementById("chat-box");
+
+const message=input.value.trim();
+
+if(message==="") return;
+
+chat.innerHTML+=`
+
+<div class="user">
+
+<span>${message}</span>
+
+</div>
+
+`;
+
+input.value="";
+
+chat.scrollTop=chat.scrollHeight;
+
+try{
+
+const response=await fetch("/chat",{
+
+method:"POST",
+
+headers:{
+
+"Content-Type":"application/json"
+
+},
+
+body:JSON.stringify({
+
+message:message
+
+})
+
+});
+
+const data=await response.json();
+
+chat.innerHTML+=`
+
+<div class="bot">
+
+<span>${data.reply}</span>
+
+</div>
+
+`;
+
+chat.scrollTop=chat.scrollHeight;
+
+}
+
+catch(error){
+
+chat.innerHTML+=`
+
+<div class="bot">
+
+<span>
+
+Something went wrong.
+
+</span>
+
+</div>
+
+`;
+
+}
+
+}
+
+document.getElementById("message").addEventListener("keypress",function(e){
+
+if(e.key==="Enter"){
+
+sendMessage();
+
+}
+
+});
+
+</script>
 
 </body>
 

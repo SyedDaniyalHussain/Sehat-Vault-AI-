@@ -1,17 +1,17 @@
 import os
 import json
 from dotenv import load_dotenv
-import google.generativeai as genai
-from google.api_core.exceptions import ResourceExhausted
+from google import genai
 
 # Load .env
 load_dotenv()
 
-# Configure Gemini
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+# Create Client (new SDK)
+client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
-# Create Model
-model = genai.GenerativeModel("gemini-2.5-flash")
+# we are using 2 models becase of limit
+# MODEL_NAME = "gemini-3.5-flash"
+MODEL_NAME = "gemini-3.1-flash-lite"
 
 
 def analyze_report(report_text):
@@ -52,7 +52,10 @@ Do not write markdown.
 Do not write explanation.
 Return only JSON.
 """
-    response = model.generate_content(prompt)
+    response = client.models.generate_content(
+        model=MODEL_NAME,
+        contents=prompt
+    )
 
     result = response.text
 
@@ -61,12 +64,3 @@ Return only JSON.
     result = result.replace("```", "")
 
     return json.loads(result)
-    # try:
-    #     response = model.generate_content(prompt)
-    #     return response.text
-
-    # except ResourceExhausted:
-    #     return "⚠️ Gemini API quota exceeded. Please wait 1 minute and try again."
-
-    # except Exception as e:
-    #     return f"Error: {str(e)}"
